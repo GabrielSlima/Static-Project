@@ -27,11 +27,12 @@ else:
     #SE O ARGUMENTO FOR POST, O NOME DO POST DEVE SER PASSADO JUNTO A PASTA DO PROJETO  
 
         
-    if argumento.lower() == 'post' and pasta_nome_post != " " and sys.argv[3] != " ":
+    if argumento.lower() == 'post' and pasta_nome_post != " " and sys.argv[3] != " " and sys.argv[4] != " ":
         print("Gerando arquivos...")
         #PRIMEIRO SERA INSERIDO, O POST, NO JSON
         #ABERTURA DO ARQUIVO EM MODO ESCRITA/LEITURA
-        pasta_destino = sys.argv[3]  
+        pasta_destino = sys.argv[3]
+        categoria = sys.argv[4]  
         try:
             files = open(str(pasta_destino) + '/data.json', 'r+')
              #LEITURA DO ARQUIVO
@@ -43,7 +44,7 @@ else:
             agora = datetime.datetime.now()
 
             #ATRIBUIÇÃO DE UM NOVO POST COM DADOS GENERICOS
-            dados[1]['posts'][pasta_nome_post] = {"title": "titulo do post", "Data": str(agora.day) + '/' + str(agora.month) + '/' + str(agora.year), "conteudo": "SEU CONTEUDO DEVE SER INSERIDO AQUI"}
+            dados[1]['posts'][pasta_nome_post] = {"title": "titulo do post", "categoria": str(categoria),"Data": str(agora.day) + '/' + str(agora.month) + '/' + str(agora.year), "conteudo": "SEU CONTEUDO DEVE SER INSERIDO AQUI"}
                 
             files.seek(0)
 
@@ -53,7 +54,7 @@ else:
             files.truncate()
             #ISNTANCIA DA CLASSE GENERATE, TAIS ARGUMENTOS DEVEM SER PASSADOS
             postagem = gerador(" "," ")
-            post = postagem.newPost(pasta_nome_post, str(pasta_destino))
+            post = postagem.newPost(pasta_nome_post, str(pasta_destino),categoria)
             if post:
                 print('Feito') 
     

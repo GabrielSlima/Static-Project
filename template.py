@@ -25,29 +25,41 @@ class hCSS():
     <title class="titulo"></title>
 </head>
 <body>
+ <nav class="nav navbar-light bg-light navbar-fixed-top navbar-expand-lg">
+        <a href="index.html" class="navbar-brand nome_site logo" id="nome" onclick="home()">TESTE</a>
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#navegacao">
+            <span class="navbar-toggler-icon"></span>
+        </button>        
+        <div class="collapse navbar-collapse menu" id="navegacao">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0 " id="menu">
+                <!-- LINKS PRINCIPAIS CARREGADOS AQUI -->
+            </ul>
+
+        </div>
+        
+    </nav>  
+<!--FIM MENU-->
+
     <div class="container">
         <div class="row">
-            <div class="pb-2 mt-4 mb-2 border-bottom col-md-12 menu" id="menu">
-                <span style="font-size: 3em;" class="nome_site col-md-2 col-xsm-1" id="nome" onclick="home()"></span>
-                <!-- AQUI SERÃO CARREGADOS OS LINKS DO MENU -->
-            </div>
+           
             
             <div class="col-md-12 area" id="area">
              <!-- AQUI SERÃO CARREGADOS OS POSTS -->
             
             </div><!--AREA-->
-
-            
-            <footer class="page-footer blue border-top col-md-12">
-                CopyRight&copy<span class="nome_site"></span>
-            </footer><!--RODAPE-->
             
         </div><!--ROW-->
     </div><!--CONTAINER-->
+<footer class="page-footer blue border-top col-md-12">
+                CopyRight&copy<span class="nome_site"></span>
+            </footer><!--RODAPE-->
     <script src="java.js"></script>
 </body>
 </html>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
+    <script src="bootstrap/js/bootstrap.min.js"></script>
 
 
 
@@ -172,7 +184,25 @@ function pegarValor(valor)
         {
             cursor: all-scroll;
             color: grey;
-        }''' 
+        }
+.logo
+{
+    display:block;
+    height: 40px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+.thumb
+{
+    display:block;
+    margin-left: auto;
+    margin-right: auto;
+}
+footer
+{
+    background: #f8f9fa;
+}
+''' 
 
         self.post_html = '''<!DOCTYPE html>
 <html lang="en">
@@ -185,25 +215,40 @@ function pegarValor(valor)
     <title class="titulo"></title>
 </head>
 <body>
+ <nav class="nav navbar-light bg-light navbar-fixed-top navbar-expand-lg">
+        <a href="index.html" class="navbar-brand nome_site logo" id="nome" onclick="home()">TESTE</a>
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#navegacao">
+            <span class="navbar-toggler-icon"></span>
+        </button>        
+        <div class="collapse navbar-collapse menu" id="navegacao">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0 " id="menu">
+                <!-- LINKS PRINCIPAIS CARREGADOS AQUI -->
+            </ul>
+
+        </div>
+        
+    </nav>  
+
     <div class="container">
         <div class="row">
-            <div class="pb-2 mt-4 mb-2 border-bottom col-md-12 menu" id="menu">
-                <span style="font-size: 3em;" class="nome_site col-md-2 col-xsm-1" id="nome" onclick="home()"></span>
-                <!-- AQUI SERÃO CARREGADOS OS LINKS DO MENU -->
-            </div>
+          <div class="page-header"> 
             <h1 id="nome_post"></h1>
+            <p class="lead" id="data"></p>
+          </div>
+          <hr class="col-md-12">
             <div class="col-md-12 area" id="area">
              <!-- AQUI SERÃO CARREGADOS OS POSTS -->
             
             </div><!--AREA-->
 
             
-            <footer class="page-footer blue border-top col-md-12">
-                CopyRight&copy<span class="nome_site"></span>
-            </footer><!--RODAPE-->
+            
             
         </div><!--ROW-->
     </div><!--CONTAINER-->
+<footer class="page-footer blue border-top col-md-12">
+                CopyRight&copy<span class="nome_site"></span>
+            </footer><!--RODAPE-->
     <script src="js_post.js"></script>
 </body>
 </html>'''          
@@ -249,7 +294,9 @@ objeto.onload = function()
 {
     var resposta = JSON.parse(objeto.responseText);
     var titulos = resposta[0]['nome_site'];
+    var titulo_post = resposta[1]['posts'][valor]['title'];
     var post = resposta[1]['posts'][valor]['conteudo'];
+    var data = resposta[1]['posts'][valor]['Data'];
     var menu_links = resposta[0]['links_menu'];
     for(i in menu_links)
     {
@@ -260,7 +307,12 @@ objeto.onload = function()
     {
         nomes[i].innerHTML = titulos.toString();    
     }
-
+    
+    //CARREGANDO O NOME DO POST
+    document.getElementById('nome_post').innerHTML = titulo_post.toString();
+    
+    //CARREGANDO A DATA DO POST
+    document.getElementById('data').innerHTML = data.toString();
     //PREENCHIMENTO DO POST
     document.getElementById('area').innerHTML = post.toString();
       
@@ -270,6 +322,7 @@ objeto.send(null);
 
 function home()
 {
+    //LOCALIZAÇÃO ATUAL PARA A PAGINA PRINCIPAL
     window.location = "../index.html";
 }
 '''  

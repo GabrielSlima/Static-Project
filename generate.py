@@ -7,6 +7,8 @@ estiloCSS = Temp.estilo
 Json = Temp.json
 conteudoH = Temp.post_html
 conteudoJ = Temp.javaS_post
+List_dir_html = Temp.diretorio_list_html
+ListDirJs = Temp.diretorio_list_js
 class gerador():
     def __init__(self,arg,pasta):
         self.arg = arg
@@ -21,6 +23,7 @@ class gerador():
         self.bootstrap = os.path.dirname(str(self.dir)+ '/bootstrap/')
         self.estilo = os.path.dirname(str(self.bootstrap)+'/css/')
         self.content = os.path.dirname(str(self.dir) + '/conteudo/')
+        self.principal_content = os.path.dirname(str(self.dir) + '/conteudo/principal/')
 
         #VERIFICAMOS SE A PASTA EXISTE
         if not os.path.exists(self.dir):
@@ -43,6 +46,8 @@ class gerador():
             # O MESMO ACONTECE COM O JSON
             self.j = open(str(self.dir)+'/data.json','w+')
             self.j.write(Json)
+
+            os.makedirs(self.principal_content)
             
             
             # #SE O DIRETORIO NAO EXISTIR
@@ -54,33 +59,40 @@ class gerador():
                 self.arq = open(str(self.estilo) + '/estilo.css', 'w+')
                 self.arq.write(estiloCSS)
 
-            #CRIAR A PASTA CONTENT E INSERIR O JS DOS POSTS LÁ
+            #CRIAR A PASTA CONTENT E INSERIR O JS DOS POSTS E DA LISTAGEM DE DIRETORIOS LÁ CASO O DIRETORIO CONTEUDO NAO EXISTA 
             if not os.path.exists(self.content):
                 os.makedirs(self.content)
                 self.js_post = open(str(self.content) + '/js_post.js', 'w+')
                 self.js_post.write(conteudoJ)
+                self.js_dir_list = open(str(self.content) + '/dir_list.js', 'w+')
+                self.js.dir_list.write(List_dir_js)
+
+            #CASO ELE EXISTA VAMOS APENAS CRIAR/ ESCREVER OS CONTEUDOS NOS ARQUIVOS
+            else: 
+                self.js_post = open(str(self.content) + '/js_post.js', 'w+')
+                self.js_post.write(conteudoJ)
+                self.js_dir_list = open(str(self.content) + '/dir_list.js', 'w+')
+                
+                self.js_dir_list.write(ListDirJs)
                 
         return True            
 
 
     #CRIAR POSTS
-    def newPost(self, nome_post, pasta_proj):
+    def newPost(self, nome_post, pasta_proj, categoria):
         self.nome_post = nome_post
         self.pasta_proj = pasta_proj
-       
-        self.post = open(self.pasta_proj + '/conteudo/' + str(self.nome_post) + '.html', 'w+')
-        self.post.write(conteudoH)
-        return True
+        self.categoria = categoria
+        self.caminho = self.pasta_proj + '/conteudo/' + self.categoria + '/'
         
-    
-
-        
-               
-        
-                    
-                
-         
-                
+        if not os.path.exists(self.caminho):
+            os.makedirs(self.caminho)
+            self.dir_list = open(self.caminho + str(categoria) + '.html', 'w+')
+            self.dir_list.write(List_dir_html)
+            self.post = open(self.caminho + str(self.nome_post) + '.html', 'w+')
+            self.post.write(conteudoH)
+        else:
             
-           
-        
+            self.post = open(self.caminho + str(self.nome_post) + '.html', 'w+')
+            self.post.write(conteudoH)
+        return True

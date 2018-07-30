@@ -67,8 +67,9 @@ python3 main.py novo nome_projeto
 ```
 ## Criar novos arquivos secundarios:
 ```
-python3 main.py post nome_post nome_pasta_projeto
+python3 main.py post nome_post nome_pasta_projeto categoria_post
 ```
+PS:OS LINKS PRINCIPAIS DEVEM SER MANIPULADOS NO JSON E DEVEM TER O MESMO NOME DA CATEGORIA ESCOLHIDA
 ## Ajuda:
 ```
 python3 main.py ou python3 main.py ajuda

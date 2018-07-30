@@ -8,7 +8,7 @@ class hCSS():
     },
     {
         "posts":{
-                    "Titulo":{"title":"titulo","Data":"xx/xx", "Conteudo":"Pode ser que der merda, ou nao"}
+                    "Titulo":{"title":"titulo","categoria": "categ", "Data":"xx/xx", "Conteudo":"Pode ser que der merda, ou nao"}
                 }
     }
 ]
@@ -74,7 +74,7 @@ var requisicao = new XMLHttpRequest();
 //PREPARANDO A NOVA REQUISICAO, METODO GET, NA URL JJ/data.json, COM ASSINCRONISMO ATIVADO
 requisicao.open('GET', 'data.json', true);
 
-//AO CARREGAR A REQUISICAO ATICAR A FUNÇAO
+//AO CARREGAR A REQUISICAO ATIVAR A FUNÇAO
 requisicao.onload = function(){
         //DADOS RETORNADOS DA REQUISICAO
         var dados = JSON.parse(requisicao.responseText);
@@ -91,7 +91,7 @@ requisicao.onload = function(){
         for(var i in links_principais){
             console.log(i);
             //ADD OS LIKNS DO MENU PRINCIPAL
-            document.getElementById('menu').innerHTML += "<a href=content/" + i.toString() + ".html" + " >" + links_principais[i].toString() + "</a>";
+            document.getElementById('menu').innerHTML += '<a href="conteudo/' + links_principais[i].toString().toLowerCase() + '/' + links_principais[i].toLowerCase()  + '.html" >' + links_principais[i].toString() + '</a>';
         }
 
 
@@ -104,11 +104,14 @@ requisicao.onload = function(){
             //BUSCAMOS UM ELEMENTO COM O ID ATUAL
             var elemento = document.getElementById(i);
             console.log(i);
+            
+            var alt = sei[i]['categoria'];
+            console.log(alt);
             //SE O ELEMENTO NAO EXISTIR, OU SEJA, NULO
             if(elemento == null){
 
                 //ADICIONA-LO NO CAMPO AREA SOMADO AO QUE JA EXISTE
-                document.getElementById('area').innerHTML += "<a onclick=pegarValor(" + "'" + i.toString()  + "')>" + i.toString() + "</a><br><span>" +sei[i]["Data"].toString()+"<br><br>";            
+                document.getElementById('area').innerHTML += '<a onclick=pegarValor("'+ i.toString() + ',' + alt.toString() +'")' + ' alt="' + alt.toString() + '">' + i.toString() + '</a><br><span>' +sei[i]["Data"].toString()+'<br><br>';            
             }
             
         }
@@ -130,9 +133,18 @@ requisicao.onload = function(){
     };
 //FAZER A REQUISICAO DE FATO    
 requisicao.send(null);
-function pegarValor(valor)
+function pegarValor(valor, categoria)
 {
-    window.location = "conteudo/"+valor+".html?valor="+valor;
+    seila = valor.split(',');
+    console.log(seila);
+    valor = seila[0];
+    categoria = seila[1];
+  
+    console.log(valor.toString());
+    console.log('*****************');
+    console.log(categoria);
+    window.location = "conteudo/"+ categoria + "/"+valor+".html?valor="+valor;
+ 
 }
 
 '''  
@@ -210,8 +222,8 @@ footer
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../bootstrap/css/estilo.css">
+    <link rel="stylesheet" href="../../bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../bootstrap/css/estilo.css">
     <title class="titulo"></title>
 </head>
 <body>
@@ -249,7 +261,7 @@ footer
 <footer class="page-footer blue border-top col-md-12">
                 CopyRight&copy<span class="nome_site"></span>
             </footer><!--RODAPE-->
-    <script src="js_post.js"></script>
+    <script src="../js_post.js"></script>
 </body>
 </html>'''          
         self.javaS_post = ''' 
@@ -289,7 +301,7 @@ function lerURL(string)
 var valor = lerURL('valor');
 
 var objeto = new XMLHttpRequest();
-objeto.open('GET', '../data.json', true);
+objeto.open('GET', '../../data.json', true);
 objeto.onload = function()
 {
     var resposta = JSON.parse(objeto.responseText);
@@ -300,7 +312,7 @@ objeto.onload = function()
     var menu_links = resposta[0]['links_menu'];
     for(i in menu_links)
     {
-        document.getElementById('menu').innerHTML += "<a href=" + menu_links[i].toString()+ ".html>" + menu_links[i].toString() + "</a>";
+        document.getElementById('menu').innerHTML += "<a href=" + menu_links[i].toString().toLowerCase()+ ".html>" + menu_links[i].toString() + "</a>";
     }    
     var nomes = document.getElementsByClassName('nome_site');
     for(var i =0; i < nomes.length; i++)
@@ -308,10 +320,7 @@ objeto.onload = function()
         nomes[i].innerHTML = titulos.toString();    
     }
     
-    //CARREGANDO O NOME DO POST
     document.getElementById('nome_post').innerHTML = titulo_post.toString();
-    
-    //CARREGANDO A DATA DO POST
     document.getElementById('data').innerHTML = data.toString();
     //PREENCHIMENTO DO POST
     document.getElementById('area').innerHTML = post.toString();
@@ -322,11 +331,129 @@ objeto.send(null);
 
 function home()
 {
-    //LOCALIZAÇÃO ATUAL PARA A PAGINA PRINCIPAL
-    window.location = "../index.html";
+    window.location = "../../index.html";
 }
 '''  
+        self.diretorio_list_html = '''<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../../bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../bootstrap/css/estilo.css">
+    <title class="titulo"></title>
+</head>
+<body>
+ <nav class="nav navbar-light bg-light navbar-fixed-top navbar-expand-lg">
+        <a href="index.html" class="navbar-brand nome_site logo" id="nome" onclick="home()">TESTE</a>
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#navegacao">
+            <span class="navbar-toggler-icon"></span>
+        </button>        
+        <div class="collapse navbar-collapse menu" id="navegacao">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0 " id="menu">
+                <!-- LINKS PRINCIPAIS CARREGADOS AQUI -->
+            </ul>
+
+        </div>
+        
+    </nav>  
+
+    <div class="container">
+        <div class="row">
+          <div class="page-header"> 
+            <h1 id="">Items relacionados: </h1>
+          </div>
+          <hr class="col-md-12">
+            <div class="col-md-12 area" id="area">
+             <!-- AQUI SERÃO CARREGADOS OS ITEMS -->
+            
+            </div><!--AREA-->
+
+            
+            
+            
+        </div><!--ROW-->
+    </div><!--CONTAINER-->
+<footer class="page-footer blue border-top col-md-12">
+                CopyRight&copy<span class="nome_site"></span>
+            </footer><!--RODAPE-->
+    <script src="../dir_list.js"></script>
+</body>
+</html> 
+'''
 
     
+        self.diretorio_list_js = ''' var objeto = new XMLHttpRequest();
+objeto.open('GET', '../../data.json', true);
 
+objeto.onload = function()
+{
+    console.log('asdasdasd');
+    var resposta = JSON.parse(objeto.responseText);
+    console.log(resposta[0]);
+    var titulos = resposta[0]['nome_site'];
+    console.log(titulos);
+    var items = resposta[1]['posts'];
+    var menu_links = resposta[0]['links_menu'];
+    for(i in menu_links)
+    {
+        document.getElementById('menu').innerHTML += "<a href=" + menu_links[i].toString().toLowerCase() + ".html>" + menu_links[i].toString() + "</a>";
+    }    
+    
+    //LENDO A URL PARA PEGAR O NOME DA CATEGORIA ATUAL
+    var link = /\w+.html/;
+    var local = window.location.toString();
+    var resultado = local.match(link).toString();
+    console.log(local, resultado);
+
+    var catName = resultado.substring(0, resultado.indexOf('.'));
+    console.log(catName);
+    console.log(" ");
+    
+     for(var i in items)
+    {
+        //console.log(i);
+        if(items[i]['categoria'] == catName)
+        {
+            var alt = items[i]['categoria'];
+            console.log('asdasd');
+            document.getElementById('area').innerHTML += '<a onclick=pegarValor("'+ i.toString() + '")' + ' alt="' + alt.toString() + '">' + i.toString() + '</a><br><span>' +items[i]["Data"].toString()+'<br><br>'; 
+        }
+    }
+    var nomes = document.getElementsByClassName('nome_site');
+             
+    try{         
+         //PARA CADA VALOR DA LISTA RETORNADA
+         for(var i = 0; i < nomes.length; i++){
+ 
+             //SERA ADICIONADO O TIULO EM FORMATO DE STRING
+             nomes[i].innerHTML = titulos.toString();
+         }
+        }
+
+    catch(err)
+    {
+        console.log('Ocorreu algum erro...');
+    }
+    
+   
+    //PREENCHIMENTO COM OS ITEMS RELACIONADOS
+    //document.getElementById('area').innerHTML = post.toString();
+      
+}; 
+
+objeto.send(null);
+console.log('asdasd');
+function pegarValor(valor)
+{
+    window.location = valor+".html?valor="+valor;
+ 
+}
+
+function home()
+{
+    window.location = "../../index.html";
+}
+'''
     

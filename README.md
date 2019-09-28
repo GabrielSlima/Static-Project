@@ -3,6 +3,7 @@
 Esse projeto teve como objetivo a pritica de conceitos dentro de Javascript, HTML, CSS, Ajax e Python.
 A proprosta do projeto e gerar paginas estáticas para o usuario da maneira mais "simples" possivel.
 
+**DEMO** https://darkarmybrasil.github.io/
 ## CLASSE main:
 
 Arquivo principal, portanto é por lá que a execução do programa inicia.

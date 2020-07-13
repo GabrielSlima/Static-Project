@@ -1,7 +1,6 @@
 # Static-Project
 
-Esse projeto teve como objetivo a pritica de conceitos dentro de Javascript, HTML, CSS, Ajax e Python.
-A proprosta do projeto e gerar paginas estáticas para o usuario da maneira mais "simples" possivel.
+Programa de linjha de comando (CLI). A proprosta é gerar paginas estáticas para o usuario.
 
 **DEMO** https://darkarmybrasil.github.io/
 ## CLASSE main:

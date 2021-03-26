@@ -1,32 +1,58 @@
-from generate import gerador
-import sys, json, datetime
-if len(sys.argv) < 3:
-    print('Insira argumentos validos por favor...\n\n')
-    print('''Modo de usar:\nCRIAR UM NOVO PROJETO \t\t novo NOME_PROJETO\nCRIAR UM NOVO POST\t\tpost NOME_DO_POST PASTA_DO_PROJETO''')
+import core
+import sys
+import json
+import datetime
+import logging
 
+AVAILABLE_FLOWS = {
+    "new": {
+        "arguments": [
+            "project_name"
+        ],
+        "processor": core.create_new_project
+    },
+    "post": {
+        "arguments": [
+            "post_name",
+            "project_name",
+            "post_category"
+        ],
+        "processor": core.create_new_post
+    }
+}
+MINIMUM_COMMAND_LINE_ARGS = 1
+FLOW_POSITION = 1
+SCRIPT_NAME = 1
+
+USAGE_SUMMARY = """
+How to use ->
+python3 main.py <COMMAND> <COMMAND_ARGUMENTS>
+Create a new project: python3 main.py new <PROJECT_NAME>
+Create a new blog post: python3 main.py post <POST_NAME> <PROJECT_NAME> <POST_CATEGORY>
+"""
+
+def exit_program():
+    invalid_arguments_message = """
+    Invalid amount of arguments, please try again with: \n {usage_summary}
+    """
+    invalid_arguments_message = invalid_arguments_message.format(
+        usage_summary=USAGE_SUMMARY
+    )
+    logging.info(invalid_arguments_message)
+    sys.exit(1)
+
+user_input = sys.argv
+
+if (len(user_input) -SCRIPT_NAME < MINIMUM_COMMAND_LINE_ARGS or 
+        not AVAILABLE_FLOWS.get(user_input[FLOW_POSITION])):
+    exit_program()
+
+if len(user_input) -SCRIPT_NAME != len(AVAILABLE_FLOWS.get(user_input[FLOW_POSITION])):
+    exit_program()
+
+processor = AVAILABLE_FLOWS[user_input[FLOW_POSITION]]['processor']
+processor(user_input[FLOW_POSITION + 1: ])
 else:
-    
-    #A OPCAO SERA O PRIMEIRO ARGUMENTO
-    argumento = sys.argv[1]
-
-    #SERA O SEGUNDO A PASTA OU NOME DO POST
-    pasta_nome_post = sys.argv[2]
-
-
-    if argumento.lower() == 'novo' and pasta_nome_post != " ":
-        print("Tentando gerar arquivos...")
-
-        #INSTANCIAMOS A CLASSE PASSANDO OS ARGUMENTOS
-        projeto = gerador(argumento, pasta_nome_post + '/')
-
-        #SE A RESPOSTA FOR TRUE
-        if projeto:
-            print('Feito')  
-    if argumento.lower() == 'ajuda':
-        print('''Modo de usar:\n\n CRIAR UM NOVO PROJETO \t\t novo NOME_PROJETO\nCRIAR UM NOVO POST\t\tpost NOME_DO_POST PASTA_DO_PROJETO''')
-    #SE O ARGUMENTO FOR POST, O NOME DO POST DEVE SER PASSADO JUNTO A PASTA DO PROJETO  
-
-        
     if argumento.lower() == 'post' and pasta_nome_post != " " and sys.argv[3] != " " and sys.argv[4] != " ":
         print("Gerando arquivos...")
         #PRIMEIRO SERA INSERIDO, O POST, NO JSON

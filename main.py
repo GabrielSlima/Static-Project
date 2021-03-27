@@ -41,18 +41,21 @@ def exit_program():
     logging.info(invalid_arguments_message)
     sys.exit(1)
 
-user_input = sys.argv
-
-if (len(user_input) -SCRIPT_NAME < MINIMUM_COMMAND_LINE_ARGS or 
-        not AVAILABLE_FLOWS.get(user_input[FLOW_POSITION])):
-    exit_program()
-
-if len(user_input) -SCRIPT_NAME != len(AVAILABLE_FLOWS.get(user_input[FLOW_POSITION])):
-    exit_program()
-
-for index, required_argument in enumerate(AVAILABLE_FLOWS[user_input[FLOW_POSITION]]['arguments']):
-    if not user_input[index + (FLOW_POSITION + SCRIPT_NAME)].strip():
+def handler(user_input):
+    if (len(user_input) -SCRIPT_NAME < MINIMUM_COMMAND_LINE_ARGS or 
+            not AVAILABLE_FLOWS.get(user_input[FLOW_POSITION])):
         exit_program()
 
-processor = AVAILABLE_FLOWS[user_input[FLOW_POSITION]]['processor']
-processor(user_input[(FLOW_POSITION + SCRIPT_NAME): ])
+    if len(user_input) -SCRIPT_NAME != len(AVAILABLE_FLOWS.get(user_input[FLOW_POSITION])):
+        exit_program()
+
+    flow = AVAILABLE_FLOWS[user_input[FLOW_POSITION]]
+    for index, required_argument in enumerate(flow['arguments']):
+        if not user_input[index + (FLOW_POSITION + SCRIPT_NAME)].strip():
+            exit_program()
+
+    processor = flow['processor']
+    processor(user_input[(FLOW_POSITION + SCRIPT_NAME): ])
+
+if __name__ == "__main__":
+    handler(sys.argv)

@@ -96,3 +96,27 @@ class gerador():
             self.post = open(self.caminho + self.nome_post + '.html', 'w+')
             self.post.write(conteudoH)
         return True
+
+class Post:
+    def __init__(self, post_basic_information):
+        self.name = post_basic_information[0]
+        self.category = post_basic_information[1]
+        self.project_name = post_basic_information[2]
+    
+    def update_posts_metadata(self):
+        files = open(str(pasta_destino) + '/data.json', 'r+')
+        leitura = files.read()
+        dados = json.loads(leitura)      
+        agora = datetime.datetime.now()
+        dados[1]['posts'][pasta_nome_post] = {"title": "titulo do post", "categoria": str(categoria),"Data": str(agora.day) + '/' + str(agora.month) + '/' + str(agora.year), "conteudo": "SEU CONTEUDO DEVE SER INSERIDO AQUI"} 
+        files.seek(0)
+
+        json.dump(dados, files, indent = 4)
+
+        files.truncate()
+        #ISNTANCIA DA CLASSE GENERATE, TAIS ARGUMENTOS DEVEM SER PASSADOS
+        postagem = gerador(" "," ")
+        post = postagem.newPost(pasta_nome_post, str(pasta_destino),categoria)
+    
+    def create_post_template(self):
+        pass

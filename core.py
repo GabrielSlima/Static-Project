@@ -97,6 +97,10 @@ class gerador():
             self.post.write(conteudoH)
         return True
 
+class Project:
+    def __init__(self, project_name):
+        pass
+
 class Post:
     def __init__(self, post_basic_information):
         self.name = post_basic_information[0]

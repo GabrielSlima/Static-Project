@@ -1,6 +1,6 @@
-from template import hCSS
+from template import hCSS as frontend_tamplate
 import os, json
-Temp = hCSS()
+Temp = frontend_tamplate()
 HTML = Temp.html
 JAVAS = Temp.javaS
 estiloCSS = Temp.estilo
@@ -9,16 +9,13 @@ conteudoH = Temp.post_html
 conteudoJ = Temp.javaS_post
 List_dir_html = Temp.diretorio_list_html
 ListDirJs = Temp.diretorio_list_js
-class gerador():
-    def __init__(self,arg,pasta):
-        self.arg = arg
-        self.pasta = pasta
 
-        
-        if self.arg.lower() == 'novo':
-            self.gerar_projeto(self.pasta)
+class Project:
+    def __init__(self, workspace_name):
+        self.workspace_name = workspace_name
+        pass
 
-    def gerar_projeto (self, pasta):
+    def new(self):
         self.dir = os.path.dirname(pasta)
         self.bootstrap = os.path.dirname(self.dir+ '/bootstrap/')
         self.estilo = os.path.dirname(self.bootstrap +'/css/')
@@ -75,37 +72,12 @@ class gerador():
                 
                 self.js_dir_list.write(ListDirJs)
                 
-        return True            
-
-
-    #CRIAR POSTS
-    def newPost(self, nome_post, pasta_proj, categoria):
-        self.nome_post = nome_post
-        self.pasta_proj = pasta_proj
-        self.categoria = categoria
-        self.caminho = self.pasta_proj + '/conteudo/' + self.categoria + '/'
-        
-        if not os.path.exists(self.caminho):
-            os.makedirs(self.caminho)
-            self.dir_list = open(self.caminho + categoria + '.html', 'w+')
-            self.dir_list.write(List_dir_html)
-            self.post = open(self.caminho + self.nome_post + '.html', 'w+')
-            self.post.write(conteudoH)
-        else:
-            
-            self.post = open(self.caminho + self.nome_post + '.html', 'w+')
-            self.post.write(conteudoH)
         return True
-
-class Project:
-    def __init__(self, project_name):
-        pass
-
 class Post:
     def __init__(self, post_basic_information):
         self.name = post_basic_information[0]
         self.category = post_basic_information[1]
-        self.project_name = post_basic_information[2]
+        self.workspace = post_basic_information[2]
     
     def update_posts_metadata(self):
         files = open(str(pasta_destino) + '/data.json', 'r+')
@@ -122,5 +94,20 @@ class Post:
         postagem = gerador(" "," ")
         post = postagem.newPost(pasta_nome_post, str(pasta_destino),categoria)
     
-    def create_post_template(self):
-        pass
+    def new(self):
+        self.nome_post = nome_post
+        self.pasta_proj = pasta_proj
+        self.categoria = categoria
+        self.caminho = self.pasta_proj + '/conteudo/' + self.categoria + '/'
+        
+        if not os.path.exists(self.caminho):
+            os.makedirs(self.caminho)
+            self.dir_list = open(self.caminho + categoria + '.html', 'w+')
+            self.dir_list.write(List_dir_html)
+            self.post = open(self.caminho + self.nome_post + '.html', 'w+')
+            self.post.write(conteudoH)
+        else:
+            
+            self.post = open(self.caminho + self.nome_post + '.html', 'w+')
+            self.post.write(conteudoH)
+        return True

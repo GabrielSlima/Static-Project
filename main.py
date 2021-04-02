@@ -4,70 +4,72 @@ import json
 import datetime
 import logging
 
+
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
 handler.setLevel(logging.INFO)
 logger.addHandler(handler)
 
-AVAILABLE_FLOWS = {
-    "new_project": {
+
+FLOWS = {
+    "project": {
         "arguments": [
             "project_name"
         ],
         "processor": core.Project
     },
-    "new_post": {
+    "post": {
         "arguments": [
             "post_name",
             "post_category",
             "project_name"
         ],
         "processor": core.Post
-    },
-    "help": {
-        "arguments": [],
-        "processor": logging.info
     }
 }
 MINIMUM_COMMAND_LINE_ARGS = 1
-FLOW_POSITION = 1
-SCRIPT_NAME = 1
+FLOW_NAME = 0
+FIRST_FLOW_PARAM = 1
+SCRIPT_NAME = 0
 
-def exit_program(invalid_arguments_message):
-    logging.error(invalid_arguments_message)
-    logging.info(process_flow.__doc__)
+
+def exit_program(message=None):
+    if message:
+        logging.error(message)
+    logging.info(execute_flow.__doc__)
     sys.exit(1)
 
 
-def process_flow(user_input):
+def execute_flow(user_input):
     """Usage: 
     Basic structure: python3 main.py <FLOW> <FLOW_ARGUMENTS>
-    Create a new project: python3 main.py new <PROJECT_NAME>
+    Create a new project: python3 main.py project <PROJECT_NAME>
     Create a new blog post: python3 main.py post <POST_NAME> <POST_CATEGORY> <PROJECT_NAME>
     """
-    
-    if (len(user_input) -SCRIPT_NAME < MINIMUM_COMMAND_LINE_ARGS or 
-            not AVAILABLE_FLOWS.get(user_input[FLOW_POSITION])):
+
+    if (len(user_input) < MINIMUM_COMMAND_LINE_ARGS or not 
+        FLOWS.get(user_input[FLOW_NAME])):
         exit_program("The flow does not exist or there is not enough params to process")
     
-    flow = AVAILABLE_FLOWS.get(user_input[FLOW_POSITION].lower())
+    if user_input[FLOW_NAME] == 'help':
+        exit_program()
     
-    if len(user_input) -(FLOW_POSITION + SCRIPT_NAME) != len(flow.get('arguments')):
-        exit_program("Invalid amount of arguments...")
-    
-    for index, required_argument in enumerate(flow['arguments']):
-        if not user_input[index + (FLOW_POSITION + SCRIPT_NAME)].strip():
-            exit_program("There's an invalid argument")
-    
-    flow_params = user_input[(FLOW_POSITION + SCRIPT_NAME): ]
+    flow = FLOWS.get(user_input[FLOW_NAME])
+    flow_arguments = user_input[FIRST_FLOW_PARAM: ]
     processor = flow['processor']
     
-    if user_input[FLOW_POSITION].lower() == 'help':
-        flow_params = process_flow.__doc__
+    if len(flow_arguments) != len(flow.get('arguments')):
+        exit_program("Too much arguments")
     
-    processor(flow_params)
+    for index, required_argument in enumerate(flow['arguments']):
+        if not user_input[index + FLOW_NAME].strip():
+            exit_program("There's an invalid argument")    
+    
+    processor(flow_arguments)
+    processor.process()
 
 
 if __name__ == "__main__":
-    process_flow(sys.argv)
+    flow_name = 1
+    execute_flow(sys.argv[flow_name: ])

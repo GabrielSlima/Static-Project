@@ -57,7 +57,7 @@ def execute_flow(user_input):
     
     flow = FLOWS.get(user_input[FLOW_NAME])
     flow_arguments = user_input[FIRST_FLOW_PARAM: ]
-    processor = flow['processor']
+    
     
     if len(flow_arguments) != len(flow.get('arguments')):
         exit_program("Too much arguments")
@@ -65,8 +65,7 @@ def execute_flow(user_input):
     for index, required_argument in enumerate(flow['arguments']):
         if not user_input[index + FLOW_NAME].strip():
             exit_program("There's an invalid argument")    
-    
-    processor(flow_arguments)
+    processor = flow['processor'](flow_arguments)
     processor.process()
 
 

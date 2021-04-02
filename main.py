@@ -12,7 +12,7 @@ handler.setLevel(logging.INFO)
 logger.addHandler(handler)
 
 
-FLOWS = {
+AVAILABLE_FLOWS = {
     "project": {
         "arguments": [
             "project_name"
@@ -49,13 +49,13 @@ def execute_flow(user_input):
     """
 
     if (len(user_input) < MINIMUM_COMMAND_LINE_ARGS or not 
-        FLOWS.get(user_input[FLOW_NAME])):
+        AVAILABLE_FLOWS.get(user_input[FLOW_NAME])):
         exit_program("The flow does not exist or there is not enough params to process")
     
     if user_input[FLOW_NAME] == 'help':
         exit_program()
     
-    flow = FLOWS.get(user_input[FLOW_NAME])
+    flow = AVAILABLE_FLOWS.get(user_input[FLOW_NAME])
     flow_arguments = user_input[FIRST_FLOW_PARAM: ]
     
     

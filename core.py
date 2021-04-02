@@ -78,7 +78,6 @@ class Project:
         )
 
     def process(self):
-        
         if os.path.exists(self.WORKSPACE):
            logging.info("The project already exists, please try again with another name.")
            return
@@ -119,9 +118,12 @@ class Post:
         metadata_file = open(self.workspace + '/data.json', 'r+')
         metadata = metadata_file.read()
         metadata_file.seek(0)
+        
         json_matadata = json.loads(metadata)
         json_matadata[1]['posts'][self.name] = self.METADATA_TEMPLATE
         json.dump(json_matadata, metadata_file, indent=4)
+        
+        metadata_file.truncate()
         metadata_file.close()
 
     def process(self):
@@ -141,3 +143,4 @@ class Post:
         post = open(category_path + self.name + '.html', 'w+')
         post.write(template.post_html)
         post.close()
+        logging.info("A new template was created for {}".format(self.name))

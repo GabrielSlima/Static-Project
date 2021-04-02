@@ -9,39 +9,54 @@ class Project:
     BOOTSTRAP_ADDRESS = "https://github.com/twbs/bootstrap/releases/download/v4.1.2/{package_name}"
     
     def __init__(self, workspace_name):
-        self.workspace_name = workspace_name[0] + "/"
+        self.workspace_name = workspace_name[0]
         self.BOOTSTRAP_FOLDER = "{workspace}/bootstrap/".format(
             workspace=self.workspace_name
         )
-        self.CSS_FOLDER = "{workspace}css".format(
+        self.CSS_FOLDER = "{workspace}/bootstrap/css/".format(
             workspace=self.workspace_name
         )
-        self.POSTS_FOLDER = "{workspace}conteudo".format(
+        self.POSTS_FOLDER = "{workspace}/conteudo/".format(
             workspace=self.workspace_name
         )
         self.BOOTSTRAP_ADDRESS = self.BOOTSTRAP_ADDRESS.format(
             package_name=self.BOOTSTRAP_PACKAGE_NAME
         )
-        print(self.BOOTSTRAP_ADDRESS)
 
     def process(self):
         template = frontend_tamplate()
-        project_workspace = os.path.dirname(self.workspace_name)
+        project_workspace = os.path.dirname(self.workspace_name + "/")
         bootstrap_folder = os.path.dirname(self.BOOTSTRAP_FOLDER)
         css_folder = os.path.dirname(self.CSS_FOLDER)
         posts_folder = os.path.dirname(self.POSTS_FOLDER)
 
+        core_elements = {
+            "main_page": {
+                "name": "index.html",
+                "template": template.html
+            },
+            "main_page_javascript": {
+                "name": "java.js",
+                "template": template.javaS
+            },
+            "metadata": {
+                "name": "data.json",
+                "template": template.json
+            }
+        }
+
         if not os.path.exists(project_workspace):
             os.makedirs(project_workspace)
-            
-            main_page = open(project_workspace + 'index.html', 'w+')
-            main_page.write(template.html)
-
-            main_page_javascript = open(project_workspace + 'java.js', 'w+' )
-            main_page_javascript.write(template.javaS)
-
-            metadata = open(project_workspace +'data.json','w+')
-            metadata.write(template.json)
+            for core_element in core_elements:
+                logging.info("Creating core element {}".format(core_element))
+                element_path = "{workspace}/{name}".format(
+                    workspace=project_workspace,
+                    name=core_elements.get(core_element['name'])
+                )
+                
+                element = open(element_path, 'w+')
+                element.write(core_elements.get(core_element['template']))
+                element.close()
             
             if not os.path.exists(bootstrap_folder):
                 os.makedirs(bootstrap_folder)
@@ -52,8 +67,8 @@ class Project:
                         package_name=self.BOOTSTRAP_PACKAGE_NAME
                     )
                 )
-            main_page_css = open(css_folder + '/estilo.css', 'w+')
-            main_page_css.write(template.estilo)
+                main_page_css = open(css_folder + '/estilo.css', 'w+')
+                main_page_css.write(template.estilo)
 
             if not os.path.exists(posts_folder):
                 os.makedirs(posts_folder)
@@ -72,7 +87,7 @@ class Post:
         self.workspace = post_basic_information[2]
         self.METADATA_TEMPLATE = {
             "title": "Title",
-            "categoria": str(categoria),
+            "categoria": self.category,
             "Data": datetime.now().strftime(self.POSTS_CREATION_DATE_MASK), 
             "conteudo": "Content"
         }
@@ -81,9 +96,9 @@ class Post:
         metadata_file = open(self.workspace + '/data.json', 'r+')
         metadata = metadata_file.read()
         metadata_file.seek(0)
-        dados = json.loads(metadata)
-        dados[1]['posts'][pasta_nome_post] =  self.METADATA_TEMPLATE
-        json.dump(dados, metadata_file, indent = 4)
+        json_matadata = json.loads(metadata)
+        json_matadata[1]['posts'][self.name] =  self.METADATA_TEMPLATE
+        json.dump(json_matadata, metadata_file, indent = 4)
         metadata_file.close()
     
     def process(self):
